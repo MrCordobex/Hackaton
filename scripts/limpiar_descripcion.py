@@ -2,6 +2,7 @@
 import re
 from collections import Counter
 import pandas as pd
+from sklearn.preprocessing import MultiLabelBinarizer
 
 def limpiar_descripcion(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
     """
@@ -152,5 +153,86 @@ def limpiar_descripcion(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
         _remove_found(d, rc) for d, rc in zip(out["descripcion"], out["codigos_repetidos"])
     ]
 
-    # --- (6) Devolver solo las 3 columnas requeridas ---
-    return out[["ubicacion", "descripcion", "codigos_repetidos"]]
+
+
+
+    # # 1) Pasar a minúsculas out['description']
+    col = 'descripcion' if 'descripcion' in df.columns else 'descripcion'
+    def _clean_charwise(x):
+        if pd.isna(x):
+            return x
+        s = str(x)
+        keep = []
+        for ch in s:
+            if ch.isalpha() or ch in " ():.":
+                keep.append(ch)
+            # si no, se descarta
+        return "".join(keep).lower()
+
+    out[col] = out[col].apply(_clean_charwise)
+
+
+
+    cod_col = "codigos_repetidos" if "codigos_repetidos" in out.columns else "códigos_repetidos"
+
+    def _as_list(x):
+        if isinstance(x, (list, tuple, set)):
+            return list(x)
+        if x is None or (isinstance(x, float) and pd.isna(x)):
+            return []
+        s = str(x).strip()
+        return [] if s == "" else s.split()
+
+    # 1) Construir vocabulario global
+    all_codes = []
+    out[cod_col].apply(lambda x: all_codes.extend(_as_list(x)))
+    vocab = sorted(set(all_codes))
+
+    # 2) Mapear a IDs (1..N) — deja 0 para “sin código”
+    code2id = {code: i for i, code in enumerate(vocab, start=1)}
+    id2code = {i: c for c, i in code2id.items()}  # por si lo necesitas
+
+    # 3) Nueva columna con lista de IDs
+    out[cod_col + "_ids"] = out[cod_col].apply(lambda x: [code2id[c] for c in _as_list(x)])
+
+    # 4) (Opcional) una sola feature numérica con el número de códigos por fila
+    out[cod_col + "_n"] = out[cod_col].apply(lambda x: len(_as_list(x)))
+
+    
+
+    df['descripcion_ot']=out['descripcion']
+    df['ubicacion']=out['ubicacion']
+    df['codigos_repetidos']=out['codigos_repetidos_ids']
+
+
+
+    
+    s = df['equipo'].astype(str).str.strip()
+    
+    # p1: número inicial
+    df['equipo_p1'] = (
+        s.str.extract(r'^\s*(\d+)', expand=False)
+        .pipe(pd.to_numeric, errors="coerce")
+        .astype("Int64")
+    )
+  
+    # p2: letras entre barras bajas (solo si hay patrón letras_numeros)
+    df["equipo_p2"] = (
+        s.str.extract(r'^\s*\d+-([A-Za-z]+)_(?:\d+)(?:-[A-Za-z0-9]+)?\s*$', expand=False)
+        .str.upper()
+    )
+
+    # p3: números tras la barra baja
+    df["equipo_p3"] = (
+        s.str.extract(r'^\s*\d+-[A-Za-z]+_(\d+)(?:-[A-Za-z0-9]+)?\s*$', expand=False)
+        .pipe(pd.to_numeric, errors="coerce")
+        .astype("Int64")
+    )
+
+    # p4: sufijo después del guion tras los números
+    df["equipo_p4"] = (
+        s.str.extract(r'^\s*\d+-[A-Za-z]+_\d+-(\w+)\s*$', expand=False)
+        .str.upper()
+    )
+
+    return df
