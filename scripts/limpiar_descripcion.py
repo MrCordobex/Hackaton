@@ -108,51 +108,7 @@ def limpiar_descripcion(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
         # Normalizar: "U T 9 0 5" -> "UT905"
         return re.sub(r"\s+", "", raw.upper())
 
-    # --- (4) Detectar códigos alfanuméricos repetidos ---
-    pat_code = re.compile(
-        r"\b(?=[A-Za-z0-9_-]*[A-Za-z])(?=[A-Za-z0-9_-]*\d)[A-Za-z0-9_-]{4,}\b"
-    )
-
-    def _find_codes(txt: str):
-        if pd.isna(txt) or txt is None:
-            return []
-        return pat_code.findall(str(txt).upper())
-
-    # Frecuencias globales de tokens en 'descripcion'
-    all_tokens = []
-    for t in out["descripcion"]:
-        all_tokens.extend(_find_codes(t))
-    freq = Counter(all_tokens)
-    repeated_set = {tok for tok, cnt in freq.items() if cnt >= 2}
-
-    def _codes_repeated_in_row(txt: str):
-        toks = set(_find_codes(txt))
-        hits = sorted(toks.intersection(repeated_set))
-        return hits if hits else None
-
-    out["codigos_repetidos"] = out["descripcion"].apply(_codes_repeated_in_row)
-
-    # --- (5) Borrar de 'descripcion' el primer UT3 y todos los códigos repetidos ---
-    def _remove_found(desc: str, repeated_codes):
-        # Si la fila venía vacía, la dejamos igual
-        if desc is None or pd.isna(desc):
-            return desc
-        s = str(desc)
-        # Eliminar la PRIMERA ocurrencia del patrón UT3 flexible
-        s = pat_ut3.sub(" ", s, count=1)
-        # Eliminar cada código repetido detectado (como palabra completa, case-insensitive)
-        if repeated_codes:
-            for tok in repeated_codes:
-                patt = re.compile(rf"\b{re.escape(tok)}\b", re.IGNORECASE)
-                s = patt.sub(" ", s)
-        # Limpieza final
-        s = re.sub(r"\s+", " ", s).strip(" -_,.;: \t")
-        return s
-
-    out["descripcion"] = [
-        _remove_found(d, rc) for d, rc in zip(out["descripcion"], out["codigos_repetidos"])
-    ]
-
+    
 
 
 
@@ -164,75 +120,29 @@ def limpiar_descripcion(df: pd.DataFrame, col_name: str) -> pd.DataFrame:
         s = str(x)
         keep = []
         for ch in s:
-            if ch.isalpha() or ch in " ():.":
+            if ch.isalpha() or ch.isdigit() or ch in " ():.":
                 keep.append(ch)
             # si no, se descarta
         return "".join(keep).lower()
 
     out[col] = out[col].apply(_clean_charwise)
-
-
-
-    cod_col = "codigos_repetidos" if "codigos_repetidos" in out.columns else "códigos_repetidos"
-
-    def _as_list(x):
-        if isinstance(x, (list, tuple, set)):
-            return list(x)
-        if x is None or (isinstance(x, float) and pd.isna(x)):
-            return []
-        s = str(x).strip()
-        return [] if s == "" else s.split()
-
-    # 1) Construir vocabulario global
-    all_codes = []
-    out[cod_col].apply(lambda x: all_codes.extend(_as_list(x)))
-    vocab = sorted(set(all_codes))
-
-    # 2) Mapear a IDs (1..N) — deja 0 para “sin código”
-    code2id = {code: i for i, code in enumerate(vocab, start=1)}
-    id2code = {i: c for c, i in code2id.items()}  # por si lo necesitas
-
-    # 3) Nueva columna con lista de IDs
-    out[cod_col + "_ids"] = out[cod_col].apply(lambda x: [code2id[c] for c in _as_list(x)])
-
-    # 4) (Opcional) una sola feature numérica con el número de códigos por fila
-    out[cod_col + "_n"] = out[cod_col].apply(lambda x: len(_as_list(x)))
-
-    
+   
 
     df['descripcion_ot']=out['descripcion']
     df['ubicacion']=out['ubicacion']
-    df['codigos_repetidos']=out['codigos_repetidos_ids']
-
-
-
     
-    s = df['equipo'].astype(str).str.strip()
-    
-    # p1: número inicial
-    df['equipo_p1'] = (
-        s.str.extract(r'^\s*(\d+)', expand=False)
-        .pipe(pd.to_numeric, errors="coerce")
-        .astype("Int64")
-    )
-  
-    # p2: letras entre barras bajas (solo si hay patrón letras_numeros)
-    df["equipo_p2"] = (
-        s.str.extract(r'^\s*\d+-([A-Za-z]+)_(?:\d+)(?:-[A-Za-z0-9]+)?\s*$', expand=False)
-        .str.upper()
-    )
+    # Me quedo con las columnas equipo, descripcion_ot y ubicacion
+    df_final = df[['equipo', 'descripcion_ot', 'ubicacion']]
+    # Concateno las columnas
+    df_final_2 = df_final.copy()
 
-    # p3: números tras la barra baja
-    df["equipo_p3"] = (
-        s.str.extract(r'^\s*\d+-[A-Za-z]+_(\d+)(?:-[A-Za-z0-9]+)?\s*$', expand=False)
-        .pipe(pd.to_numeric, errors="coerce")
-        .astype("Int64")
+    df_final_2['descripcion_ot'] = (
+        df_final_2['equipo'].astype(str) + ' ' +
+        df_final_2['descripcion_ot'].astype(str) + ' ' +
+        df_final_2['ubicacion'].astype(str)
     )
+    df_final_2 = df_final_2[['descripcion_ot']]
+    df_final_2.to_excel('../data/processed/descripcion_ot.xlsx', index=False)
 
-    # p4: sufijo después del guion tras los números
-    df["equipo_p4"] = (
-        s.str.extract(r'^\s*\d+-[A-Za-z]+_\d+-(\w+)\s*$', expand=False)
-        .str.upper()
-    )
 
-    return df
+    return df_final_2
