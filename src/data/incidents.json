@@ -356,5 +356,173 @@
       "q4": false,
       "q5": false
     }
+  },
+  {
+    "id": "a4b2ca2b-2e6d-4583-83eb-ba52d23e3d63",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T12:47:45.893258Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "df686d1b-aead-46b9-a3ae-230ef54b6bf0",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T12:51:53.424440Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "847887b6-107e-4a5b-bcaa-2720bb9cb3cd",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T12:56:26.874668Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "5ba86b89-f670-49fb-99e4-cc99b642f98e",
+    "comment": "Retardo/No aplica freno de estacionamiento",
+    "created_at": "2025-10-25T12:58:18.503558Z",
+    "yes_no": {
+      "q1": false,
+      "q2": true,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "8cabb884-f575-4859-a008-38e22af79bdf",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T13:23:53.225224Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "dc9cc5ac-0856-4666-8485-5008952cff6a",
+    "comment": "Retardo/No aplica freno de estacionamiento",
+    "created_at": "2025-10-25T13:24:39.502545Z",
+    "yes_no": {
+      "q1": false,
+      "q2": true,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "4a4002bf-65d5-4ce5-9e0e-e661bb22201f",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T13:33:37.112831Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "207ffd2b-b62c-407a-9f40-41409e638d40",
+    "comment": "Retardo/No aplica freno de estacionamiento",
+    "created_at": "2025-10-25T13:34:11.740524Z",
+    "yes_no": {
+      "q1": false,
+      "q2": true,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "51a1ebdb-a1b1-4bd9-a5b0-5b1c15add6bd",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T13:37:03.689461Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "8c4f2f20-f964-4a15-b236-71b225b3de36",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T13:38:18.292037Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "9aa6f64c-693f-457e-84e5-5c943d17cd98",
+    "comment": "Sirga de estacionamiento rota",
+    "created_at": "2025-10-25T13:41:11.456472Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": true,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "b295dc4a-6133-446c-a84f-ae97a650b36e",
+    "comment": "Sirga de estacionamiento rota",
+    "created_at": "2025-10-25T13:44:50.640323Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": true,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "468c2e9c-35ff-404b-a3a2-f20056c40864",
+    "comment": "Sirga de estacionamiento rota",
+    "created_at": "2025-10-25T13:52:28.100923Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": true,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "7bad4f7f-30f9-4189-9813-12ba9a5b0fa3",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T13:54:12.511667Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
   }
 ]

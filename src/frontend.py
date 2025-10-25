@@ -25,6 +25,143 @@ from aplicar_modelo_wrapper import (
     aplicar_modelo_recalc_todo,  # ← NUEVO
 )
 
+# ===== Definiciones por "Código tarea std" (CLAVERO+ACCIÓN) =====
+import csv, math, re, unicodedata
+from pathlib import Path
+
+DEF_CSV_PATH = str(Path(__file__).resolve().parent.parent / "data/processed/Definiciones_clave_Codigo_actuacion_V6_utf8.csv")
+print("\n[DEBUG] Cargando definiciones desde:", DEF_CSV_PATH)
+
+def _norm(s) -> str:
+    """Normaliza texto y gestiona NaN o None → 'No hacer nada'."""
+    if s is None:
+        return "No hacer nada"
+    if isinstance(s, float):
+        if math.isnan(s):
+            return "No hacer nada"
+        s = str(s)
+    s = str(s).strip()
+    s = unicodedata.normalize("NFKC", s)
+    return s
+
+def _find_col(cols, *cands):
+    low = {c.lower(): c for c in cols}
+    for cand in cands:
+        if cand.lower() in low:
+            return low[cand.lower()]
+    for c in cols:
+        cl = c.lower()
+        for cand in cands:
+            if cand.lower() in cl:
+                return c
+    return None
+
+@st.cache_data(show_spinner=False)
+def load_defs_by_codigo_tarea_std(path: str):
+    print("[DEBUG] Entrando en load_defs_by_codigo_tarea_std()")
+    if not os.path.exists(path):
+        print("[ERROR] CSV no encontrado:", path)
+        return {}
+    try:
+        import pandas as pd
+        print("[DEBUG] Intentando leer CSV con pandas...")
+        df = pd.read_csv(path, sep=None, engine="python", encoding="utf-8-sig")
+        print(f"[DEBUG] CSV cargado. Forma: {df.shape}")
+        print("[DEBUG] Columnas detectadas:", list(df.columns))
+
+        col_code = _find_col(df.columns, "Código tarea std", "Codigo tarea std", "codigo tarea std", "codigo_tarea_std")
+        col_def  = _find_col(df.columns,
+                             "Definición", "Definicion", "DEFINICION",
+                             "Definition", "DEFINITION",
+                             "descripcion", "descripción")
+        print(f"[DEBUG] Columna código detectada: {col_code}")
+        print(f"[DEBUG] Columna definición detectada: {col_def}")
+        if not col_code or not col_def:
+            print("[ERROR] No se encontraron columnas adecuadas.")
+            return {}
+
+        df[col_code] = df[col_code].astype(str).map(_norm)
+        df[col_def]  = df[col_def].astype(str).map(_norm)
+        df = df.dropna(subset=[col_code]).drop_duplicates(subset=[col_code], keep="first")
+        mapping = dict(zip(df[col_code], df[col_def]))
+        print(f"[DEBUG] Diccionario construido. Claves cargadas: {len(mapping)}")
+        # Mostrar algunas claves de ejemplo
+        for i, (k, v) in enumerate(mapping.items()):
+            if i >= 5:
+                break
+            print(f"  Ejemplo {i+1}: {k} -> {v[:60]}...")
+        return mapping
+
+    except Exception as e:
+        print("[ERROR] Falló lectura con pandas:", e)
+
+    print("[DEBUG] Intentando fallback con csv module...")
+    try:
+        with open(path, "r", encoding="utf-8-sig", newline="") as fh:
+            sample = fh.read(2048)
+            fh.seek(0)
+            dialect = csv.Sniffer().sniff(sample)
+            reader = csv.DictReader(fh, dialect=dialect)
+            cols = reader.fieldnames or []
+            print("[DEBUG] Columnas detectadas (fallback):", cols)
+            col_code = _find_col(cols, "Código tarea std", "Codigo tarea std", "codigo tarea std")
+            col_def  = _find_col(cols, "Definición", "Definicion", "descripcion", "descripción", "DEFINICION")
+            print(f"[DEBUG] Columna código: {col_code} | Columna definición: {col_def}")
+            if not col_code or not col_def:
+                print("[ERROR] No se encontraron columnas en fallback.")
+                return {}
+            mapping = {}
+            for row in reader:
+                code = _norm(row.get(col_code, ""))
+                defi = _norm(row.get(col_def, ""))
+                if code and defi and code not in mapping:
+                    mapping[code] = defi
+            print(f"[DEBUG] Fallback completado. Claves cargadas: {len(mapping)}")
+            return mapping
+    except Exception as e:
+        print("[ERROR] Fallback CSV falló:", e)
+        return {}
+
+DEFS_BY_CODE = load_defs_by_codigo_tarea_std(DEF_CSV_PATH)
+print(f"[DEBUG] Total de definiciones cargadas: {len(DEFS_BY_CODE)}")
+
+def _variants(clavero: str, accion: str):
+    c = _norm(clavero)
+    a = _norm(accion)
+    base = f"{c}{a}"
+    yield base
+    yield f"{c} {a}"
+    yield f"{c}-{a}"
+    yield f"{c}_{a}"
+    yield re.sub(r"\W+", "", base)
+
+def get_def_by_clavero_accion(clavero: str, accion: str) -> str:
+    """Busca definición usando combinaciones típicas de CLAVERO+ACCIÓN."""
+    if not clavero or not accion or accion.upper() == "NAN":
+        return ""
+    for key in _variants(clavero, accion):
+        v = DEFS_BY_CODE.get(key)
+        if v:
+            print(f"[DEBUG] Match exacto: {key}")
+            return v
+    m = re.match(r"^([A-Za-z]+)(\d+)([A-Za-z0-9]*)$", _norm(clavero))
+    if m:
+        alt = f"{m.group(1)} {m.group(2)}{m.group(3)} {accion}"
+        for key in _variants(alt, accion):
+            v = DEFS_BY_CODE.get(key)
+            if v:
+                print(f"[DEBUG] Match alternativo: {key}")
+                return v
+    # búsqueda relajada
+    c_norm = _norm(clavero)
+    a_norm = _norm(accion)
+    for code, defi in DEFS_BY_CODE.items():
+        if code.startswith(c_norm) and code.endswith(a_norm):
+            print(f"[DEBUG] Match parcial: {code}")
+            return defi
+    return ""
+# ===============================================================
+
 # ------------------- Config -------------------
 st.set_page_config(page_title="Incidencias | Top-K", layout="wide")
 
@@ -353,7 +490,7 @@ def render_card(it, key_prefix: str):
             else:
                 # Claveros y acciones
                 for ci, cblock in enumerate(topk):
-                    c_label = cblock.get("label","—")
+                    c_label = cblock.get("label", "—")
                     st.markdown(f"**{ci+1}. {c_label}**", unsafe_allow_html=True)
 
                     acciones = cblock.get("acciones", []) or []
@@ -361,11 +498,50 @@ def render_card(it, key_prefix: str):
                         st.caption("• sin acciones sugeridas")
                         continue
 
-                    # ❌ sin (conf: …)
-                    options = [a.get('label','—') for a in acciones]
+                    # Opciones de acciones (sin conf)
+                    options = [a.get('label', '—') for a in acciones]
                     rad_key = f"{key_prefix}_rad_{safe_key}_{ci}"
-                    choice = st.radio("Acciones", options=options, index=0, key=rad_key, horizontal=True, label_visibility="collapsed")
+                    choice = st.radio("Acciones", options=options, index=0, key=rad_key,
+                                    horizontal=True, label_visibility="collapsed")
 
+                    # 🔹 Mostrar definiciones de cada acción debajo
+                    with st.container():
+                        st.markdown("<div style='margin-left:1rem; margin-top:0.3rem;'>", unsafe_allow_html=True)
+                        for a in acciones:
+                            lbl = a.get('label', '—')
+                            # 🟠 Caso especial: acción vacía o 'NAN'
+                            if not lbl or str(lbl).strip().upper() == "NAN":
+                                st.markdown(
+                                    f"<p style='font-size:0.85rem; margin:0.1rem 0; color:#9CA3AF;'><b>{lbl}</b> — Nada que hacer</p>",
+                                    unsafe_allow_html=True
+                                )
+                                continue
+
+                            # 🔹 Buscar definición de esa acción
+                            defi = None
+                            try:
+                                defi = get_def_by_clavero_accion(c_label, lbl)
+                            except Exception:
+                                defi = None
+
+                            if defi:
+                                # Corrección de caracteres mal codificados (acentos)
+                                try:
+                                    defi = defi.encode("latin1").decode("utf-8")
+                                except Exception:
+                                    pass
+                                st.markdown(
+                                    f"<p style='font-size:0.85rem; margin:0.1rem 0;'><b>{lbl}</b> — {defi}</p>",
+                                    unsafe_allow_html=True
+                                )
+                            else:
+                                st.markdown(
+                                    f"<p style='font-size:0.85rem; margin:0.1rem 0; color:#9CA3AF;'><b>{lbl}</b> — Sin definición</p>",
+                                    unsafe_allow_html=True
+                                )
+                        st.markdown("</div>", unsafe_allow_html=True)
+
+                    # --- botón aplicar opción ---
                     apply_key = f"{key_prefix}_apply_{safe_key}_{ci}"
                     if st.button("Aplicar esta opción", key=apply_key, help="Fijar clavero+acción, vaciar Top-K y marcar como satisfecha"):
                         chosen_idx = options.index(choice)
@@ -387,7 +563,7 @@ def render_card(it, key_prefix: str):
                             itm["revisions"] = revs
                             itm["prediction"]["clavero"] = new_clav
                             itm["prediction"]["accion"] = new_acc
-                            itm["prediction"]["topk"] = {"claveros": []}  # cierra opciones
+                            itm["prediction"]["topk"] = {"claveros": []}
                             itm["status"] = "ok"
                             save_predictions(all_preds)
 

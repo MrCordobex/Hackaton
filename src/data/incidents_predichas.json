@@ -1,12 +1,92 @@
 [
   {
-    "id": "80b28ba1-e36d-4a09-8e64-8ca02eb6a3bc",
-    "created_at": "2025-10-25T12:32:27.620331Z",
-    "comment": "Fuga/Fallo en el antirretorno",
+    "id": "468c2e9c-35ff-404b-a3a2-f20056c40864",
+    "created_at": "2025-10-25T13:52:28.100923Z",
+    "comment": "Sirga de estacionamiento rota",
     "yes_no": {
-      "q1": true,
+      "q1": false,
       "q2": false,
-      "q3": false,
+      "q3": true,
+      "q4": false,
+      "q5": false
+    },
+    "prediction": {
+      "clavero": "FRE0101",
+      "accion": "T70",
+      "topk": {
+        "claveros": []
+      }
+    },
+    "revisions": [
+      {
+        "created_at": "2025-10-25T13:53:28.522360Z",
+        "old_prediction": {
+          "clavero": "FRE0708",
+          "accion": "T62"
+        },
+        "correction_comment": "UT912 M1 PANEL DE FRENO CON FUGA DE AIRE EN ZOCALO DE ANTI RETORNO",
+        "new_prediction": {
+          "clavero": "FRE0101",
+          "accion": "T70"
+        }
+      },
+      {
+        "created_at": "2025-10-25T13:53:58.773921Z",
+        "old_prediction": {
+          "clavero": "FRE0101",
+          "accion": "T70"
+        },
+        "correction_comment": "Selección manual desde Top-K",
+        "new_prediction": {
+          "clavero": "FRE0101",
+          "accion": "T70"
+        }
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "id": "b295dc4a-6133-446c-a84f-ae97a650b36e",
+    "created_at": "2025-10-25T13:44:50.640323Z",
+    "comment": "Sirga de estacionamiento rota",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": true,
+      "q4": false,
+      "q5": false
+    },
+    "prediction": {
+      "clavero": "FRE0708",
+      "accion": "T62",
+      "topk": {
+        "claveros": []
+      }
+    },
+    "revisions": [
+      {
+        "created_at": "2025-10-25T13:45:27.775304Z",
+        "old_prediction": {
+          "clavero": "FRE0708",
+          "accion": "T62"
+        },
+        "correction_comment": "Selección manual desde Top-K",
+        "new_prediction": {
+          "clavero": "FRE0708",
+          "accion": "T62"
+        }
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "id": "9aa6f64c-693f-457e-84e5-5c943d17cd98",
+    "created_at": "2025-10-25T13:41:11.456472Z",
+    "comment": "Sirga de estacionamiento rota",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": true,
       "q4": false,
       "q5": false
     },
@@ -19,36 +99,12 @@
     },
     "revisions": [
       {
-        "created_at": "2025-10-25T12:32:45.750095Z",
+        "created_at": "2025-10-25T13:45:41.662338Z",
         "old_prediction": {
-          "clavero": "FRE0101",
-          "accion": "T79"
-        },
-        "correction_comment": "UT 915 R2 EPAC SE QUEDA EN FUGA CONSTANTE",
-        "new_prediction": {
-          "clavero": "FRE0101",
-          "accion": "T70"
-        }
-      },
-      {
-        "created_at": "2025-10-25T12:33:03.948533Z",
-        "old_prediction": {
-          "clavero": "FRE0101",
-          "accion": "T70"
+          "clavero": "FRE0708",
+          "accion": "T62"
         },
         "correction_comment": "FUGA EN EPAC <html>13-3-24<div>ASIE A IMANOL O</div><div><br></div><div>SE QUITA EPAC POR FUGA CONSTANTE</div><div><br></div><div>SE CAMBIA EPAC . SE PRUEBA EPAC NUEVO Y FUNCIONA OK</div><div><br></div><div>QUITADO&nbsp, 60</div><div>COLOCADO&nbsp, 08</div></html>#\t\t\t\t\t<html>OT CON REPI</html>",
-        "new_prediction": {
-          "clavero": "FRE09",
-          "accion": "T71"
-        }
-      },
-      {
-        "created_at": "2025-10-25T12:33:18.082288Z",
-        "old_prediction": {
-          "clavero": "FRE09",
-          "accion": "T71"
-        },
-        "correction_comment": "Selección manual desde Top-K",
         "new_prediction": {
           "clavero": "FRE09",
           "accion": "T71"
@@ -56,5 +112,55 @@
       }
     ],
     "status": "ok"
+  },
+  {
+    "id": "7bad4f7f-30f9-4189-9813-12ba9a5b0fa3",
+    "created_at": "2025-10-25T13:54:12.511667Z",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    },
+    "prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79",
+      "topk": {
+        "claveros": [
+          {
+            "label": "FRE0101",
+            "score": null,
+            "acciones": [
+              {
+                "label": "T79",
+                "score": null
+              }
+            ]
+          },
+          {
+            "label": "FRE11",
+            "score": null,
+            "acciones": [
+              {
+                "label": "T79",
+                "score": null
+              }
+            ]
+          },
+          {
+            "label": "FRE0404",
+            "score": null,
+            "acciones": [
+              {
+                "label": "NAN",
+                "score": null
+              }
+            ]
+          }
+        ]
+      }
+    }
   }
 ]
