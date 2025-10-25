@@ -5,6 +5,16 @@ import time
 from datetime import datetime, date
 import streamlit as st
 
+# --- dependencias opcionales / suaves ---
+try:
+    import pandas as pd
+except Exception:
+    pd = None
+try:
+    import altair as alt
+except Exception:
+    alt = None
+
 # ============= FIX pickle (__main__/main) =============
 import sys
 import funciones as _funciones
@@ -21,9 +31,84 @@ from aplicar_modelo_wrapper import (
 # ------------------- Config -------------------
 st.set_page_config(page_title="Incidencias | Top-K", layout="wide")
 
-st.title("📋 Incidencias")
-st.caption("Clasificación con sugerencias Top-K y filtros por estado")
+# --- Session state init (robusto) ---
+if "edit" not in st.session_state:
+    st.session_state["edit"] = {}      # qué tarjetas están en modo edición
+if "auto_refresh" not in st.session_state:
+    st.session_state["auto_refresh"] = True
 
+# ======= Branding / Tema Loyola =======
+LOYOLA_PRIMARY = "#003A70"   # azul Loyola profundo
+LOYOLA_ACCENT  = "#00A3E0"   # azul claro de apoyo
+LOYOLA_BG      = "#F5F8FC"   # gris azulado suave
+
+st.markdown(f"""
+<style>
+/* fondo general */
+.main .block-container {{ padding-top: 0.6rem; }}
+html, body, .main {{ background: {LOYOLA_BG} !important; }}
+
+/* barra hero */
+.hero {{
+  background: linear-gradient(90deg, {LOYOLA_PRIMARY} 0%, #0B4C8A 50%, #0E5EA8 100%);
+  color: white; padding: 12px 18px; border-radius: 14px; margin-bottom: 12px;
+  display:flex; align-items:center; gap:.6rem;
+}}
+.hero .logo {{
+  width: 28px; height: 28px; border-radius: 6px; background: white; color:{LOYOLA_PRIMARY};
+  display:flex; align-items:center; justify-content:center; font-weight:800;
+}}
+.hero .title {{ font-size: 1.2rem; font-weight: 700; margin:0; }}
+.hero .desc  {{ font-size: .92rem; opacity:.95; margin:0; }}
+
+/* tarjetas */
+.card {{
+  padding: 1rem 1.1rem; border: 1px solid #E5E7EB; border-radius: 14px; 
+  margin-bottom: 0.9rem; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}}
+.card-header {{display:flex; justify-content: space-between; align-items:center; margin-bottom:0.25rem;}}
+.meta {{color:#6B7280; font-size:0.88rem;}}
+.pill {{
+  display:inline-block; padding: 0.2rem 0.55rem; border-radius: 9999px; 
+  background:#F3F4F6; border:1px solid #E5E7EB; font-size:0.85rem; margin-right:0.35rem;
+}}
+.badge-ok  {{background:#DCFCE7; border-color:#A7F3D0;}}
+.badge-pend{{background:#E0E7FF; border-color:#C7D2FE;}}
+.badge-rev {{background:#FEF9C3; border-color:#FDE68A;}}
+.kv {{font-size:0.96rem; margin: 0.25rem 0;}}
+.kv b {{color:#111827}}
+.btn-row {{display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-top:0.4rem;}}
+.sidebar-title {{font-weight: 700; color:{LOYOLA_PRIMARY};}}
+.topk-small {{color:#6B7280; font-size:0.85rem;}}
+
+/* resaltado de búsqueda */
+mark.search {{ background: {LOYOLA_ACCENT}33; color: {LOYOLA_PRIMARY}; padding:0 .2rem; border-radius:4px; }}
+
+/* botones primarios */
+.stButton > button[kind="primary"] {{
+  background: {LOYOLA_PRIMARY};
+  border: 1px solid {LOYOLA_PRIMARY};
+}}
+.stButton > button:hover[kind="primary"] {{
+  background: #074c8f;
+  border-color: #074c8f;
+}}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown(
+    f"""
+    <div class="hero">
+      <div class="logo">L</div>
+      <div>
+        <div class="title">Incidencias · Top-K</div>
+        <p class="desc">Clasificación asistida con sugerencias y revisión con feedback del técnico</p>
+      </div>
+    </div>
+    """, unsafe_allow_html=True
+)
+
+# ------------------- Utilidades JSON -------------------
 DATA_DIR = "data"
 INCIDENTS_FILE = os.path.join(DATA_DIR, "incidents.json")
 PRED_FILE = os.path.join(DATA_DIR, "incidents_predichas.json")
@@ -31,35 +116,6 @@ FEEDBACK_FILE = os.path.join(DATA_DIR, "incidents_feedback.json")
 
 REFRESH_SECONDS = 2.0
 
-# ---------------- Estado edición persistente ----------------
-if "edit" not in st.session_state:
-    st.session_state["edit"] = {}  # { "<tab>_<key>": bool }
-
-def is_any_editing() -> bool:
-    return any(bool(v) for v in st.session_state["edit"].values())
-
-# ------------------- Estilos -------------------
-st.markdown("""
-<style>
-.block-container { padding-top: 1.0rem; padding-bottom: 1.2rem; }
-.card {padding: 1rem 1.1rem; border: 1px solid #E5E7EB; border-radius: 14px; margin-bottom: 0.85rem; background: #fff;}
-.card-header {display:flex; justify-content: space-between; align-items:center; margin-bottom:0.25rem;}
-.meta {color:#6B7280; font-size:0.88rem;}
-.pill {display:inline-block; padding: 0.2rem 0.55rem; border-radius: 9999px; background:#F3F4F6; border:1px solid #E5E7EB; font-size:0.85rem; margin-right:0.35rem;}
-.badge-ok {background:#DCFCE7; border-color:#A7F3D0;}
-.badge-pend {background:#E0E7FF; border-color:#C7D2FE;}
-.badge-rev  {background:#FEF9C3; border-color:#FDE68A;}
-.kv {font-size:0.96rem; margin: 0.25rem 0;}
-.kv b {color:#111827}
-.btn-row {display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-top:0.4rem;}
-.sidebar-title {font-weight: 600; color:#111827;}
-.topk-row {display:flex; flex-direction:column; gap:0.35rem;}
-.topk-pill {display:inline-block; padding: 0.15rem 0.5rem; border-radius: 9999px; background:#F3F4F6; border:1px solid #E5E7EB; font-size:0.86rem; margin-right:0.35rem;}
-.topk-small {color:#6B7280; font-size:0.85rem;}
-</style>
-""", unsafe_allow_html=True)
-
-# ------------------- Utilidades JSON -------------------
 def _load_list(path):
     if not os.path.exists(path):
         return []
@@ -127,6 +183,20 @@ def _status_of(it) -> str:
         return "Revisadas"
     return "Pendientes"
 
+# Resaltado de búsqueda seguro (sin romper HTML)
+import re, html
+def _highlight(txt: str, q: str) -> str:
+    if not q:
+        return html.escape(txt)
+    res = []
+    last = 0
+    for m in re.finditer(re.escape(q), txt, flags=re.IGNORECASE):
+        res.append(html.escape(txt[last:m.start()]))
+        res.append(f"<mark class='search'>{html.escape(m.group(0))}</mark>")
+        last = m.end()
+    res.append(html.escape(txt[last:]))
+    return ''.join(res)
+
 # ------------------- Filtros (sidebar) -------------------
 with st.sidebar:
     st.markdown("<div class='sidebar-title'>🔎 Filtros</div>", unsafe_allow_html=True)
@@ -159,8 +229,20 @@ with st.sidebar:
     claveros_top1 = sorted({ (it.get("prediction") or {}).get("clavero","") for it in preds_all if (it.get("prediction") or {}).get("clavero") })
     sel_clav = st.selectbox("Clavero (top-1)", options=["— todos —"] + claveros_top1, index=0)
 
+    # sólo incidencias con Top-K ya calculado
+    only_with_topk = st.checkbox("Sólo con Top-K disponible", value=False)
+
+    # ordenado
+    sort_opt = st.selectbox("Ordenar por", options=["Fecha ↓ (recientes)", "Fecha ↑ (antiguas)", "Estado", "Clavero"], index=0)
+
     st.divider()
-    st.caption("Auto-refresco cada ~2 s (pausa si estás editando)")
+    st.toggle("Auto-refresh", key="auto_refresh", value=st.session_state["auto_refresh"])
+    st.caption("Si está activo, refresca cada ~2 s (pausa si editas)")
+
+    # Exportación (se rellena más abajo)
+    st.markdown("### Exportar")
+    export_json_ph = st.empty()
+    export_csv_ph = st.empty()
 
 def _item_date_ok(it):
     try:
@@ -181,18 +263,123 @@ def _item_status_ok(it):
     if sel_status == "— todos —": return True
     return _status_of(it) == sel_status
 
-# ------------------- KPIs -------------------
+def _item_topk_ok(it):
+    if not only_with_topk: return True
+    pred = it.get("prediction",{}) or {}
+    k = ((pred.get("topk") or {}).get("claveros") or [])
+    return len(k) > 0
+
+# ------------------- KPIs + mini-gráfico -------------------
+preds_all = load_predictions()  # recarga
 total = len(preds_all)
 num_ok = sum(1 for it in preds_all if _status_of(it) == "Satisfechas")
 num_rev = sum(1 for it in preds_all if _status_of(it) == "Revisadas")
 num_pending = sum(1 for it in preds_all if _status_of(it) == "Pendientes")
 
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3, c4 = st.columns([1,1,1,2])
 c1.metric("Total", total)
 c2.metric("Pendientes", num_pending)
 c3.metric("Revisadas", num_rev)
 c4.metric("Satisfechas", num_ok)
+
+# Minigráfico (evolución diaria de incidencias)
+if alt is not None and pd is not None:
+    try:
+        if preds_all:
+            dates = [
+                datetime.fromisoformat(it["created_at"].replace("Z","")).date()
+                for it in preds_all if it.get("created_at")
+            ]
+            df_dates = pd.DataFrame(dates, columns=["date"])
+            df_counts = df_dates.value_counts().rename_axis('date').reset_index(name='count').sort_values("date")
+            chart = alt.Chart(df_counts).mark_area(opacity=0.4).encode(
+                x=alt.X('date:T', title=None),
+                y=alt.Y('count:Q', title='Incidencias/día'),
+                tooltip=['date:T','count:Q']
+            ).properties(height=60)
+            st.altair_chart(chart, use_container_width=True)
+    except Exception:
+        pass
+
 st.divider()
+
+# ------------------- Ordenado y filtrado final -------------------
+filtered = [
+    it for it in preds_all
+    if _item_date_ok(it) and _item_text_ok(it) and _item_clavero_ok(it) and _item_status_ok(it) and _item_topk_ok(it)
+]
+
+def _sort_key(it):
+    if sort_opt == "Fecha ↑ (antiguas)":
+        return it.get("created_at","")
+    if sort_opt == "Estado":
+        return _status_of(it), it.get("created_at","")
+    if sort_opt == "Clavero":
+        return (it.get("prediction",{}) or {}).get("clavero",""), it.get("created_at","")
+    return it.get("created_at","")  # Fecha ↓ por defecto
+
+reverse = (sort_opt in ("Fecha ↓ (recientes)",))
+filtered.sort(key=_sort_key, reverse=reverse)
+
+# ---- Exportar lo filtrado ----
+try:
+    export_json_ph.download_button(
+        "Descargar JSON (filtro)",
+        data=json.dumps(filtered, ensure_ascii=False, indent=2),
+        file_name="incidencias_filtradas.json",
+        mime="application/json",
+        use_container_width=True
+    )
+    if pd is not None:
+        flat = []
+        for it in filtered:
+            pred = it.get("prediction", {}) or {}
+            flat.append({
+                "id": it.get("id",""),
+                "created_at": it.get("created_at",""),
+                "comment": it.get("comment",""),
+                "status": it.get("status",""),
+                "clavero_top1": pred.get("clavero",""),
+                "accion_top1": pred.get("accion",""),
+                "has_topk": 1 if (((pred.get("topk") or {}).get("claveros") or [])) else 0
+            })
+        df_flat = pd.DataFrame(flat)
+        export_csv_ph.download_button(
+            "Descargar CSV (filtro)",
+            data=df_flat.to_csv(index=False).encode("utf-8"),
+            file_name="incidencias_filtradas.csv",
+            mime="text/csv",
+            use_container_width=True
+        )
+except Exception:
+    pass
+
+# ------------------- Acciones masivas -------------------
+if filtered:
+    with st.expander("🧰 Utilidades sobre el listado filtrado"):
+        left, right = st.columns([1,3])
+        with left:
+            if st.button("Calcular Top-K en lote (faltantes)", type="primary", help="Genera y guarda 3×3 para incidencias del filtro que aún no tienen Top-K"):
+                updated = 0
+                all_preds = load_predictions()
+                for it in filtered:
+                    pred = it.get("prediction", {}) or {}
+                    topk = ((pred.get("topk") or {}).get("claveros") or [])
+                    if len(topk) == 0:
+                        try:
+                            new_pred = aplicar_modelo_topk(it.get("comment",""), k_clavero=3, k_accion=3)
+                            idx = find_index_by_item(all_preds, it)
+                            if idx is not None:
+                                all_preds[idx]["prediction"] = new_pred
+                                updated += 1
+                        except Exception:
+                            continue
+                if updated:
+                    save_predictions(all_preds)
+                    st.toast(f"Top-K calculado en {updated} incidencia(s) ✅")
+                    st.rerun()
+                else:
+                    st.info("No había incidencias pendientes de Top-K en el filtro.")
 
 # ------------------- Render tarjeta -------------------
 def _badge_html(it):
@@ -220,7 +407,8 @@ def render_card(it, key_prefix: str):
     with left:
         header_html = f"<div class='card-header'><div class='meta'>{ts}</div><div>{_badge_html(it)}</div></div>"
         st.markdown(header_html, unsafe_allow_html=True)
-        st.markdown(f"<p class='kv'><b>Comentario</b>: {comment}</p>", unsafe_allow_html=True)
+        shown_comment = _highlight(comment, q_text) if q_text else html.escape(comment)
+        st.markdown(f"<p class='kv'><b>Comentario</b>: {shown_comment}</p>", unsafe_allow_html=True)
     with right:
         pass
 
@@ -234,7 +422,7 @@ def render_card(it, key_prefix: str):
     with st.expander("🔎 Ver Top-K sugerencias (3×3)", expanded=False):
         if not topk:
             calc_key = f"{key_prefix}_calc_topk_{safe_key}"
-            if st.button("Calcular Top-K ahora", key=calc_key, help="Genera y guarda 3×3 para esta incidencia"):
+            if st.button("Calcular Top-K ahora", key=calc_key, help="Genera y guarda 3×3 para esta incidencia", type="primary"):
                 try:
                     new_pred = aplicar_modelo_topk(comment, k_clavero=3, k_accion=3)
                     if not isinstance(new_pred, dict) or "topk" not in new_pred:
@@ -333,10 +521,10 @@ def render_card(it, key_prefix: str):
 
     # Entrar en edición
     if ko_clicked:
-        st.session_state["edit"][edit_key] = True
+        st.session_state.setdefault("edit", {})[edit_key] = True
 
     # ------- Expander de corrección (recalcular SOLO actuaciones con feedback) -------
-    if st.session_state["edit"].get(edit_key, False):
+    if st.session_state.get("edit", {}).get(edit_key, False):
         with st.expander("✍️ Proponer corrección y recalcular actuaciones (Modelo 2)", expanded=True):
             draft_key = f"{key_prefix}_corr_{safe_key}"
             new_txt = st.text_area(
@@ -352,7 +540,7 @@ def render_card(it, key_prefix: str):
                 cancel_clicked = st.button("Cancelar", key=f"{key_prefix}_cancel_{safe_key}")
 
             if cancel_clicked:
-                st.session_state["edit"][edit_key] = False
+                st.session_state.setdefault("edit", {})[edit_key] = False
                 st.stop()
 
             if recalc_clicked:
@@ -408,10 +596,10 @@ def render_card(it, key_prefix: str):
 
                     fb.append(fb_entry)
                     save_feedback(fb)
-                    st.session_state["edit"][edit_key] = True
+                    st.session_state.setdefault("edit", {})[edit_key] = True
                     st.rerun()
 
-    # Histórico (sin f-strings con comillas conflictivas)
+    # Histórico
     revisions = it.get("revisions", []) or []
     if revisions:
         with st.expander("🕘 Histórico de revisiones"):
@@ -429,12 +617,6 @@ def render_card(it, key_prefix: str):
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ------------------- Render principal -------------------
-preds_all = load_predictions()
-filtered = [
-    it for it in preds_all
-    if _item_date_ok(it) and _item_text_ok(it) and _item_clavero_ok(it) and _item_status_ok(it)
-]
-
 if not filtered:
     st.info("No hay incidencias con los filtros actuales.")
 else:
@@ -444,6 +626,9 @@ else:
             render_card(it, key_prefix="main")
 
 # ------------------- Auto-refresh (pausado si editas) -------------------
-if not is_any_editing():
+def is_any_editing() -> bool:
+    return any(bool(v) for v in st.session_state.get("edit", {}).values())
+
+if st.session_state.get("auto_refresh", True) and not is_any_editing():
     time.sleep(REFRESH_SECONDS)
     st.rerun()
