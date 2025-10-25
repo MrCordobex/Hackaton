@@ -1,0 +1,98 @@
+[
+  {
+    "id": "17f6cda3-ca78-4335-a7f1-03908055a537",
+    "created_at": "2025-10-25T09:21:46.890305Z",
+    "original_comment": "ROSMIMAN UT 914 EN M1 NO SE APLICA FRENO DE ESTACIONAMIENTO",
+    "original_prediction": {
+      "clavero": "FRE0103",
+      "accion": "NAN"
+    },
+    "user_feedback": "ok"
+  },
+  {
+    "id": "19de04f9-9e95-4d71-a5df-ac2e781b7b7d",
+    "created_at": "2025-10-25T09:24:20.616925Z",
+    "original_comment": "ROSMIMAN UT 914 EN M1 NO SE APLICA FRENO DE ESTACIONAMIENTO",
+    "original_prediction": {
+      "clavero": "FRE0103",
+      "accion": "NAN"
+    },
+    "user_feedback": "ok"
+  },
+  {
+    "id": "ce347e49-291a-444b-a54c-c5d2d60ac9c2",
+    "created_at": "2025-10-25T10:22:30.855888Z",
+    "original_comment": "ROSMIMAN UT 914 EN M1 NO SE APLICA FRENO DE ESTACIONAMIENTO",
+    "original_prediction": {
+      "clavero": "FRE0103",
+      "accion": "NAN"
+    },
+    "user_feedback": "ok"
+  },
+  {
+    "id": "7eb5b34a-8c5b-413c-8892-8501665b24fb",
+    "created_at": "2025-10-25T10:23:31.040643Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "Freno estacionamiento",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "ce347e49-291a-444b-a54c-c5d2d60ac9c2",
+    "created_at": "2025-10-25T10:31:59.547876Z",
+    "original_comment": "ROSMIMAN UT 914 EN M1 NO SE APLICA FRENO DE ESTACIONAMIENTO",
+    "original_prediction": {
+      "clavero": "FRE0103",
+      "accion": "T70"
+    },
+    "user_feedback": "ok"
+  },
+  {
+    "id": "7eb5b34a-8c5b-413c-8892-8501665b24fb",
+    "created_at": "2025-10-25T10:32:16.192083Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "Freno estacionamiento",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "d5b8693c-7b55-4265-bac9-7858b573a8fd",
+    "created_at": "2025-10-25T10:38:09.952185Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "SE APLICA FRENO DE ESTACIONAMIENTO",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "d5b8693c-7b55-4265-bac9-7858b573a8fd",
+    "created_at": "2025-10-25T10:38:39.147185Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "antirretorno",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  }
+]
