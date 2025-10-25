@@ -98,5 +98,263 @@
     "id": "d5b8693c-7b55-4265-bac9-7858b573a8fd",
     "comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
     "created_at": "2025-10-25T10:37:37.440277Z"
+  },
+  {
+    "id": "36dc7fed-1c38-4ded-a12b-1fcc10eefe7c",
+    "comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "created_at": "2025-10-25T10:48:01.704786Z"
+  },
+  {
+    "id": "dd381188-c3bb-4b8f-9ccf-1fd56dbd0bfb",
+    "comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "created_at": "2025-10-25T10:52:18.779006Z"
+  },
+  {
+    "id": "e72247f0-78f8-457b-b58e-9c82606e71d3",
+    "comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "created_at": "2025-10-25T10:55:44.236659Z"
+  },
+  {
+    "id": "a1e19bc0-74d9-4d0b-bb03-3547aa606e6c",
+    "comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "created_at": "2025-10-25T11:00:32.701056Z"
+  },
+  {
+    "id": "f3d97c24-22ce-4596-ba1e-2e9d96cdea79",
+    "comment": "UT912 M1 PANEL DE FRENO CON FUGA DE AIRE EN ZOCALO DE ANTI RETORNO",
+    "created_at": "2025-10-25T11:06:36.595412Z"
+  },
+  {
+    "id": "b366750f-526e-48e2-9d51-6234447aa90e",
+    "comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "created_at": "2025-10-25T11:08:31.225580Z"
+  },
+  {
+    "id": "64fbb1aa-bec9-46a7-be8a-349e69e60477",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T11:11:00.749930Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "9a7be137-c208-42b8-9913-4ea565ffb24c",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T11:14:43.084495Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "94983168-2faf-434a-8f2f-c1587bcb1350",
+    "comment": "Retardo/No aplica freno de estacionamiento",
+    "created_at": "2025-10-25T11:15:58.094272Z",
+    "yes_no": {
+      "q1": false,
+      "q2": true,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "7c9aff88-f9d1-4de8-b735-89247d17784d",
+    "comment": "Sirga de estacionamiento rota",
+    "created_at": "2025-10-25T11:16:07.561696Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": true,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "0f6acfd7-e3d3-49fe-bb3f-1bfc00b05b8e",
+    "comment": "Fallo en válvula antibloqueo",
+    "created_at": "2025-10-25T11:16:17.245915Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": false,
+      "q4": true,
+      "q5": false
+    }
+  },
+  {
+    "id": "d9a2e467-9440-44c9-8011-f200b5cc5e1b",
+    "comment": "Fuga en válvula de freno de estacionamiento",
+    "created_at": "2025-10-25T11:16:24.956298Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": true
+    }
+  },
+  {
+    "id": "1a42d3e7-f9ca-4736-8e6a-9a150ac07c42",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T11:17:43.246895Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "f2e35329-0a11-4a7e-a75f-819c4916fbae",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T11:23:59.822499Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "8958b754-41a0-401b-8da8-b49e941a3d25",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T11:33:12.639071Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "0ea1c31e-94da-4eda-84a4-72ad11ff6017",
+    "comment": "Retardo/No aplica freno de estacionamiento",
+    "created_at": "2025-10-25T11:34:02.478667Z",
+    "yes_no": {
+      "q1": false,
+      "q2": true,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "732d6266-406b-4e7a-9f65-7907893f387e",
+    "comment": "Fuga en válvula de freno de estacionamiento",
+    "created_at": "2025-10-25T11:34:56.031908Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": true
+    }
+  },
+  {
+    "id": "5d13f766-6b28-47ad-b030-5be1e7c52cfe",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T11:41:57.776223Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "98687052-3a68-416f-807c-505f19910bf0",
+    "comment": "Retardo/No aplica freno de estacionamiento",
+    "created_at": "2025-10-25T11:42:51.754566Z",
+    "yes_no": {
+      "q1": false,
+      "q2": true,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "c6beeb01-2cab-4c96-a853-3ebaddcfec95",
+    "comment": "UT 915 R2 EPAC SE QUEDA EN FUGA CONSTANTE",
+    "created_at": "2025-10-25T12:15:03.855713Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "ed3d12ad-e94f-4c1a-a9ae-f9aa62bc7d4c",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T12:16:09.029113Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "06b8696f-1166-4002-8c34-b5786e0004e1",
+    "comment": "Retardo/No aplica freno de estacionamiento",
+    "created_at": "2025-10-25T12:24:01.821779Z",
+    "yes_no": {
+      "q1": false,
+      "q2": true,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "c879fcfc-683a-4dd7-a788-dc978c7400bf",
+    "comment": "UT 915 R2 EPAC SE QUEDA EN FUGA CONSTANTE",
+    "created_at": "2025-10-25T12:24:33.217843Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "a7dd0f0c-2efd-4cd9-8e36-d3559424a31c",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T12:31:26.823199Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "80b28ba1-e36d-4a09-8e64-8ca02eb6a3bc",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-25T12:32:27.620331Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
   }
 ]

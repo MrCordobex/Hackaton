@@ -380,7 +380,7 @@ def Funcion_prediccion_actuacion2(
 # Helpers opcionales (no requeridos, pero útiles)
 # ----------------------------------------------------------
 
-def predecir_topk_clavero(descripcion_ot: str, k: int = 3) -> List[str]:
+def predecir_topk_clavero1(descripcion_ot: str, k: int = 3) -> List[str]:
     """Devuelve top-k etiquetas CLAVERO (sin probs), únicas y ordenadas por prob desc."""
     _ensure_models_loaded()
     if _clf_clav is None:
@@ -389,6 +389,36 @@ def predecir_topk_clavero(descripcion_ot: str, k: int = 3) -> List[str]:
     X = _tr_union([txt], _vect_word_clav, _vect_char_clav)
     p = _clf_clav.predict_proba(X)[0]
     idx_sorted = np.argsort(p)[::-1]
+    out, seen = [], set()
+    for i in idx_sorted:
+        lab = str(_clav_classes[i])
+        if lab not in seen:
+            out.append(lab)
+            seen.add(lab)
+            if len(out) == k:
+                break
+    return out
+
+def predecir_topk_clavero2(
+    descripcion_ot: str,
+    descripcion_averia: Optional[str] = None,
+    comentarios: Optional[str] = None,
+    k: int = 3
+) -> List[str]:
+    """
+    Devuelve el top-k de CLAVERO usando toda la info:
+    descripcion_ot + descripcion_averia + comentarios.
+    """
+    _ensure_models_loaded()
+    if _clf_clav is None:
+        raise RuntimeError("Modelo de CLAVERO no entrenado/cargado.")
+
+    txt_full = _concat_text(descripcion_ot or "", descripcion_averia, comentarios)
+    X = _tr_union([txt_full], _vect_word_clav, _vect_char_clav)
+
+    p = _clf_clav.predict_proba(X)[0]
+    idx_sorted = np.argsort(p)[::-1]
+
     out, seen = [], set()
     for i in idx_sorted:
         lab = str(_clav_classes[i])

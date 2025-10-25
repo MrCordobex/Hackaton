@@ -94,5 +94,305 @@
       "clavero": "FRE0707",
       "accion": "T70"
     }
+  },
+  {
+    "id": "36dc7fed-1c38-4ded-a12b-1fcc10eefe7c",
+    "created_at": "2025-10-25T10:48:15.145538Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "antirretornn",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "36dc7fed-1c38-4ded-a12b-1fcc10eefe7c",
+    "created_at": "2025-10-25T10:48:30.356900Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "antirretorno falla",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "dd381188-c3bb-4b8f-9ccf-1fd56dbd0bfb",
+    "created_at": "2025-10-25T10:52:37.059994Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "ROSMIMAN UT 914 EN M1 NO SE APLICA FRENO DE ESTACIONAMIENTO",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "dd381188-c3bb-4b8f-9ccf-1fd56dbd0bfb",
+    "created_at": "2025-10-25T10:52:47.717373Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "fuga",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "dd381188-c3bb-4b8f-9ccf-1fd56dbd0bfb",
+    "created_at": "2025-10-25T10:53:03.677305Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "freno",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "dd381188-c3bb-4b8f-9ccf-1fd56dbd0bfb",
+    "created_at": "2025-10-25T10:55:10.850635Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "antibloqueo",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "e72247f0-78f8-457b-b58e-9c82606e71d3",
+    "created_at": "2025-10-25T10:56:16.144824Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE02",
+      "accion": "T70"
+    },
+    "user_feedback": "ok"
+  },
+  {
+    "id": "f3d97c24-22ce-4596-ba1e-2e9d96cdea79",
+    "created_at": "2025-10-25T11:07:06.402539Z",
+    "original_comment": "UT912 M1 PANEL DE FRENO CON FUGA DE AIRE EN ZOCALO DE ANTI RETORNO",
+    "original_prediction": {
+      "clavero": "FRE01",
+      "accion": "NAN"
+    },
+    "correction_comment": "JUNTAS ZOCALO-ANTI RETORNO DAÃ‘ADAS REPASAR ROSCAS Y CAMBIO KIT INTERIOR\",",
+    "recalc": {
+      "clavero": "FRE01",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "f3d97c24-22ce-4596-ba1e-2e9d96cdea79",
+    "created_at": "2025-10-25T11:07:58.259322Z",
+    "original_comment": "UT912 M1 PANEL DE FRENO CON FUGA DE AIRE EN ZOCALO DE ANTI RETORNO",
+    "original_prediction": {
+      "clavero": "FRE01",
+      "accion": "T70"
+    },
+    "user_feedback": "ok"
+  },
+  {
+    "id": "b366750f-526e-48e2-9d51-6234447aa90e",
+    "created_at": "2025-10-25T11:09:51.093211Z",
+    "original_comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "original_prediction": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    },
+    "correction_comment": "JUNTAS ZOCALO-ANTI RETORNO DAÃ‘ADAS REPASAR ROSCAS Y CAMBIO KIT INTERIOR\",",
+    "recalc": {
+      "clavero": "FRE0707",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "64fbb1aa-bec9-46a7-be8a-349e69e60477",
+    "created_at": "2025-10-25T11:11:57.288736Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE010403",
+      "accion": "T71"
+    },
+    "correction_comment": "JUNTAS ZOCALO-ANTI RETORNO DAÃ‘ADAS REPASAR ROSCAS Y CAMBIO KIT INTERIOR\",",
+    "recalc": {
+      "clavero": "FRE010403",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "9a7be137-c208-42b8-9913-4ea565ffb24c",
+    "created_at": "2025-10-25T11:14:59.753279Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    },
+    "correction_comment": "JUNTAS ZOCALO-ANTI RETORNO DAÃ‘ADAS REPASAR ROSCAS Y CAMBIO KIT INTERIOR\"",
+    "recalc": {
+      "clavero": "FRE0101",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "f2e35329-0a11-4a7e-a75f-819c4916fbae",
+    "created_at": "2025-10-25T11:24:07.106324Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    },
+    "user_feedback": "ok_from_topk",
+    "chosen_pair": {
+      "clavero": "FRE0101",
+      "accion": "T71"
+    }
+  },
+  {
+    "id": "8958b754-41a0-401b-8da8-b49e941a3d25",
+    "created_at": "2025-10-25T11:33:31.953914Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    },
+    "correction_comment": "JUNTAS ZOCALO-ANTI RETORNO DAÃ‘ADAS REPASAR ROSCAS Y CAMBIO KIT INTERIOR\",",
+    "recalc": {
+      "clavero": "FRE0101",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "8958b754-41a0-401b-8da8-b49e941a3d25",
+    "created_at": "2025-10-25T11:33:40.263742Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T70"
+    },
+    "user_feedback": "ok_from_topk",
+    "chosen_pair": {
+      "clavero": "FRE0101",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "732d6266-406b-4e7a-9f65-7907893f387e",
+    "created_at": "2025-10-25T11:35:54.914576Z",
+    "original_comment": "Fuga en válvula de freno de estacionamiento",
+    "original_prediction": {
+      "clavero": "FRE02",
+      "accion": "NAN"
+    },
+    "correction_comment": "Cambiar vávula freno estacionamiento",
+    "recalc": {
+      "clavero": "FRE02",
+      "accion": "NAN"
+    }
+  },
+  {
+    "id": "5d13f766-6b28-47ad-b030-5be1e7c52cfe",
+    "created_at": "2025-10-25T11:42:23.773520Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    },
+    "user_feedback": "ok_from_topk",
+    "chosen_pair": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    }
+  },
+  {
+    "id": "c879fcfc-683a-4dd7-a788-dc978c7400bf",
+    "created_at": "2025-10-25T12:25:01.138929Z",
+    "original_comment": "UT 915 R2 EPAC SE QUEDA EN FUGA CONSTANTE",
+    "original_prediction": {
+      "clavero": "FRE01",
+      "accion": "NAN"
+    },
+    "correction_comment": "FUGA EN EPAC <html>13-3-24<div>ASIE A IMANOL O</div><div><br></div><div>SE QUITA EPAC POR FUGA CONSTANTE</div><div><br></div><div>SE CAMBIA EPAC . SE PRUEBA EPAC NUEVO Y FUNCIONA OK</div><div><br></div><div>QUITADO&nbsp, 60</div><div>COLOCADO&nbsp, 08</div></html>#\t\t\t\t\t<html>OT CON REPI</html>",
+    "recalc": {
+      "clavero": "FRE09",
+      "accion": "T71"
+    }
+  },
+  {
+    "id": "a7dd0f0c-2efd-4cd9-8e36-d3559424a31c",
+    "created_at": "2025-10-25T12:31:48.455029Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    },
+    "correction_comment": "UT 915 R2 EPAC SE QUEDA EN FUGA CONSTANTE",
+    "recalc": {
+      "clavero": "FRE0101",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "80b28ba1-e36d-4a09-8e64-8ca02eb6a3bc",
+    "created_at": "2025-10-25T12:32:45.738929Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    },
+    "correction_comment": "UT 915 R2 EPAC SE QUEDA EN FUGA CONSTANTE",
+    "recalc": {
+      "clavero": "FRE0101",
+      "accion": "T70"
+    }
+  },
+  {
+    "id": "80b28ba1-e36d-4a09-8e64-8ca02eb6a3bc",
+    "created_at": "2025-10-25T12:33:03.938719Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T70"
+    },
+    "correction_comment": "FUGA EN EPAC <html>13-3-24<div>ASIE A IMANOL O</div><div><br></div><div>SE QUITA EPAC POR FUGA CONSTANTE</div><div><br></div><div>SE CAMBIA EPAC . SE PRUEBA EPAC NUEVO Y FUNCIONA OK</div><div><br></div><div>QUITADO&nbsp, 60</div><div>COLOCADO&nbsp, 08</div></html>#\t\t\t\t\t<html>OT CON REPI</html>",
+    "recalc": {
+      "clavero": "FRE09",
+      "accion": "T71"
+    }
+  },
+  {
+    "id": "80b28ba1-e36d-4a09-8e64-8ca02eb6a3bc",
+    "created_at": "2025-10-25T12:33:18.086358Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE09",
+      "accion": "T71"
+    },
+    "user_feedback": "ok_from_topk",
+    "chosen_pair": {
+      "clavero": "FRE09",
+      "accion": "T71"
+    }
   }
 ]

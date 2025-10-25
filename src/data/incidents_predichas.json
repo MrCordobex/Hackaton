@@ -1,96 +1,60 @@
 [
   {
-    "id": "d5b8693c-7b55-4265-bac9-7858b573a8fd",
-    "created_at": "2025-10-25T10:37:37.440277Z",
-    "comment": "UT922 M2 EJE11 FRENO ESTACIONAMIENTO TRINQUETE MAL",
+    "id": "80b28ba1-e36d-4a09-8e64-8ca02eb6a3bc",
+    "created_at": "2025-10-25T12:32:27.620331Z",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    },
     "prediction": {
-      "clavero": "FRE0707",
-      "accion": "T70",
+      "clavero": "FRE09",
+      "accion": "T71",
       "topk": {
-        "claveros": [
-          {
-            "label": "FRE0707",
-            "score": null,
-            "acciones": [
-              {
-                "label": "T70",
-                "score": null
-              },
-              {
-                "label": "T79",
-                "score": null
-              },
-              {
-                "label": "NAN",
-                "score": null
-              }
-            ]
-          },
-          {
-            "label": "FRE02",
-            "score": null,
-            "acciones": [
-              {
-                "label": "NAN",
-                "score": null
-              },
-              {
-                "label": "T70",
-                "score": null
-              },
-              {
-                "label": "T79",
-                "score": null
-              }
-            ]
-          },
-          {
-            "label": "FRE0103",
-            "score": null,
-            "acciones": [
-              {
-                "label": "T70",
-                "score": null
-              },
-              {
-                "label": "NAN",
-                "score": null
-              },
-              {
-                "label": "T79",
-                "score": null
-              }
-            ]
-          }
-        ]
+        "claveros": []
       }
     },
     "revisions": [
       {
-        "created_at": "2025-10-25T10:38:09.961316Z",
+        "created_at": "2025-10-25T12:32:45.750095Z",
         "old_prediction": {
-          "clavero": "FRE0707",
-          "accion": "T70"
+          "clavero": "FRE0101",
+          "accion": "T79"
         },
-        "correction_comment": "SE APLICA FRENO DE ESTACIONAMIENTO",
+        "correction_comment": "UT 915 R2 EPAC SE QUEDA EN FUGA CONSTANTE",
         "new_prediction": {
-          "clavero": "FRE0707",
+          "clavero": "FRE0101",
           "accion": "T70"
         }
       },
       {
-        "created_at": "2025-10-25T10:38:39.157274Z",
+        "created_at": "2025-10-25T12:33:03.948533Z",
         "old_prediction": {
-          "clavero": "FRE0707",
+          "clavero": "FRE0101",
           "accion": "T70"
         },
-        "correction_comment": "antirretorno",
+        "correction_comment": "FUGA EN EPAC <html>13-3-24<div>ASIE A IMANOL O</div><div><br></div><div>SE QUITA EPAC POR FUGA CONSTANTE</div><div><br></div><div>SE CAMBIA EPAC . SE PRUEBA EPAC NUEVO Y FUNCIONA OK</div><div><br></div><div>QUITADO&nbsp, 60</div><div>COLOCADO&nbsp, 08</div></html>#\t\t\t\t\t<html>OT CON REPI</html>",
         "new_prediction": {
-          "clavero": "FRE0707",
-          "accion": "T70"
+          "clavero": "FRE09",
+          "accion": "T71"
+        }
+      },
+      {
+        "created_at": "2025-10-25T12:33:18.082288Z",
+        "old_prediction": {
+          "clavero": "FRE09",
+          "accion": "T71"
+        },
+        "correction_comment": "Selección manual desde Top-K",
+        "new_prediction": {
+          "clavero": "FRE09",
+          "accion": "T71"
         }
       }
     ],
-    "status": "revised"
+    "status": "ok"
   }
 ]

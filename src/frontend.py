@@ -10,10 +10,6 @@ try:
     import pandas as pd
 except Exception:
     pd = None
-try:
-    import altair as alt
-except Exception:
-    alt = None
 
 # ============= FIX pickle (__main__/main) =============
 import sys
@@ -22,87 +18,71 @@ sys.modules['__main__'] = _funciones
 sys.modules['main'] = _funciones
 # ======================================================
 
-# Wrapper: Top-K inicial y recálculo de acciones con feedback
+# Wrappers
 from aplicar_modelo_wrapper import (
     aplicar_modelo_topk,
     aplicar_modelo_recalc_acciones,
+    aplicar_modelo_recalc_todo,  # ← NUEVO
 )
 
 # ------------------- Config -------------------
 st.set_page_config(page_title="Incidencias | Top-K", layout="wide")
 
-# --- Session state init (robusto) ---
+# --- Session state ---
 if "edit" not in st.session_state:
-    st.session_state["edit"] = {}      # qué tarjetas están en modo edición
+    st.session_state["edit"] = {}
 if "auto_refresh" not in st.session_state:
     st.session_state["auto_refresh"] = True
 
-# ======= Branding / Tema Loyola =======
-LOYOLA_PRIMARY = "#003A70"   # azul Loyola profundo
-LOYOLA_ACCENT  = "#00A3E0"   # azul claro de apoyo
-LOYOLA_BG      = "#F5F8FC"   # gris azulado suave
+# ======= Branding CAF (rojo/blanco) =======
+CAF_RED = "#E30613"
+CAF_BG  = "#F8F9FB"
 
 st.markdown(f"""
 <style>
-/* fondo general */
-.main .block-container {{ padding-top: 0.6rem; }}
-html, body, .main {{ background: {LOYOLA_BG} !important; }}
+.main .block-container {{ padding-top: .6rem; }}
+html, body, .main {{ background: {CAF_BG} !important; }}
 
-/* barra hero */
 .hero {{
-  background: linear-gradient(90deg, {LOYOLA_PRIMARY} 0%, #0B4C8A 50%, #0E5EA8 100%);
+  background: linear-gradient(90deg, {CAF_RED} 0%, #a90b13 100%);
   color: white; padding: 12px 18px; border-radius: 14px; margin-bottom: 12px;
   display:flex; align-items:center; gap:.6rem;
 }}
-.hero .logo {{
-  width: 28px; height: 28px; border-radius: 6px; background: white; color:{LOYOLA_PRIMARY};
-  display:flex; align-items:center; justify-content:center; font-weight:800;
-}}
+.hero .logo {{ width: 28px; height: 28px; border-radius: 6px; background: white; color:{CAF_RED};
+  display:flex; align-items:center; justify-content:center; font-weight:800; }}
 .hero .title {{ font-size: 1.2rem; font-weight: 700; margin:0; }}
 .hero .desc  {{ font-size: .92rem; opacity:.95; margin:0; }}
 
-/* tarjetas */
-.card {{
-  padding: 1rem 1.1rem; border: 1px solid #E5E7EB; border-radius: 14px; 
-  margin-bottom: 0.9rem; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.04);
-}}
-.card-header {{display:flex; justify-content: space-between; align-items:center; margin-bottom:0.25rem;}}
-.meta {{color:#6B7280; font-size:0.88rem;}}
-.pill {{
-  display:inline-block; padding: 0.2rem 0.55rem; border-radius: 9999px; 
-  background:#F3F4F6; border:1px solid #E5E7EB; font-size:0.85rem; margin-right:0.35rem;
-}}
+.card {{ padding: 1rem 1.1rem; border: 1px solid #E5E7EB; border-radius: 14px; 
+  margin-bottom: .9rem; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.04); }}
+.card-header {{display:flex; justify-content: space-between; align-items:center; margin-bottom:.25rem;}}
+.meta {{color:#6B7280; font-size:.88rem;}}
+.pill {{display:inline-block; padding:.2rem .55rem; border-radius:9999px; background:#F3F4F6; border:1px solid #E5E7EB; font-size:.85rem; margin-right:.35rem;}}
 .badge-ok  {{background:#DCFCE7; border-color:#A7F3D0;}}
 .badge-pend{{background:#E0E7FF; border-color:#C7D2FE;}}
 .badge-rev {{background:#FEF9C3; border-color:#FDE68A;}}
-.kv {{font-size:0.96rem; margin: 0.25rem 0;}}
+.kv {{font-size:.96rem; margin:.25rem 0;}}
 .kv b {{color:#111827}}
-.btn-row {{display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-top:0.4rem;}}
-.sidebar-title {{font-weight: 700; color:{LOYOLA_PRIMARY};}}
-.topk-small {{color:#6B7280; font-size:0.85rem;}}
+.btn-row {{display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin-top:.4rem;}}
+.sidebar-title {{font-weight:700; color:{CAF_RED};}}
+.topk-small {{color:#6B7280; font-size:.85rem;}}
+.locked {{ border:1px dashed #CBD5E1; background:#F8FAFC; padding:.6rem .75rem; border-radius:12px; margin-top:.4rem; }}
+.locked b {{ color:{CAF_RED}; }}
 
-/* resaltado de búsqueda */
-mark.search {{ background: {LOYOLA_ACCENT}33; color: {LOYOLA_PRIMARY}; padding:0 .2rem; border-radius:4px; }}
-
-/* botones primarios */
 .stButton > button[kind="primary"] {{
-  background: {LOYOLA_PRIMARY};
-  border: 1px solid {LOYOLA_PRIMARY};
+  background: {CAF_RED}; border: 1px solid {CAF_RED};
 }}
-.stButton > button:hover[kind="primary"] {{
-  background: #074c8f;
-  border-color: #074c8f;
-}}
+.stButton > button:hover[kind="primary"] {{ background:#b40b13; border-color:#b40b13; }}
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown(
-    f"""
+    """
     <div class="hero">
-      <div class="logo">L</div>
+      <div class="logo">CAF</div>
       <div>
         <div class="title">Incidencias · Top-K</div>
-        <p class="desc">Clasificación asistida con sugerencias y revisión con feedback del técnico</p>
+        <p class="desc">Clasificación asistida y revisión con feedback del técnico</p>
       </div>
     </div>
     """, unsafe_allow_html=True
@@ -113,7 +93,6 @@ DATA_DIR = "data"
 INCIDENTS_FILE = os.path.join(DATA_DIR, "incidents.json")
 PRED_FILE = os.path.join(DATA_DIR, "incidents_predichas.json")
 FEEDBACK_FILE = os.path.join(DATA_DIR, "incidents_feedback.json")
-
 REFRESH_SECONDS = 2.0
 
 def _load_list(path):
@@ -147,14 +126,12 @@ def load_feedback():
 def save_feedback(lst):
     _atomic_save(FEEDBACK_FILE, lst)
 
-# --------------- Helpers robustos (ID/keys) ---------------
+# --------------- Helpers robustos ---------------
 def make_safe_key(item):
     _id = item.get("id")
     ts = item.get("created_at", "")
     comment = item.get("comment", "")
-    if _id:
-        return _id
-    return f"{ts}__{abs(hash(comment))}"
+    return _id or f"{ts}__{abs(hash(comment))}"
 
 def same_item(a, b):
     if a.get("id") and b.get("id"):
@@ -168,28 +145,21 @@ def find_index_by_item(lst, target_item):
     return None
 
 def fmt_score(score):
-    if score is None:
-        return "—"
-    try:
-        return f"{100.0*float(score):.1f}%"
-    except Exception:
-        return "—"
+    if score is None: return "—"
+    try: return f"{100.0*float(score):.1f}%"
+    except Exception: return "—"
 
 def _status_of(it) -> str:
     status = (it.get("status") or "").lower().strip()
-    if status == "ok":
-        return "Satisfechas"
-    if (it.get("revisions", []) or []):
-        return "Revisadas"
+    if status == "ok": return "Satisfechas"
+    if (it.get("revisions", []) or []): return "Revisadas"
     return "Pendientes"
 
-# Resaltado de búsqueda seguro (sin romper HTML)
+# Resaltado búsqueda
 import re, html
 def _highlight(txt: str, q: str) -> str:
-    if not q:
-        return html.escape(txt)
-    res = []
-    last = 0
+    if not q: return html.escape(txt)
+    res = []; last = 0
     for m in re.finditer(re.escape(q), txt, flags=re.IGNORECASE):
         res.append(html.escape(txt[last:m.start()]))
         res.append(f"<mark class='search'>{html.escape(m.group(0))}</mark>")
@@ -203,13 +173,10 @@ with st.sidebar:
     preds_all = load_predictions()
 
     def _to_date(s):
-        try:
-            return datetime.fromisoformat(s.replace("Z","")).date()
-        except Exception:
-            return None
+        try: return datetime.fromisoformat(s.replace("Z","")).date()
+        except Exception: return None
 
-    min_date = None
-    max_date = None
+    min_date = None; max_date = None
     for it in preds_all:
         d = _to_date(it.get("created_at",""))
         if d:
@@ -221,34 +188,26 @@ with st.sidebar:
     start_d, end_d = st.date_input("Rango de fechas", value=(min_date, max_date))
     q_text = st.text_input("Texto en comentario", placeholder="palabras clave…").strip()
 
-    # filtro por estado
     status_options = ["— todos —", "Pendientes", "Revisadas", "Satisfechas"]
     sel_status = st.selectbox("Estado", options=status_options, index=0)
 
-    # filtros por clavero top-1
     claveros_top1 = sorted({ (it.get("prediction") or {}).get("clavero","") for it in preds_all if (it.get("prediction") or {}).get("clavero") })
     sel_clav = st.selectbox("Clavero (top-1)", options=["— todos —"] + claveros_top1, index=0)
 
-    # sólo incidencias con Top-K ya calculado
     only_with_topk = st.checkbox("Sólo con Top-K disponible", value=False)
-
-    # ordenado
     sort_opt = st.selectbox("Ordenar por", options=["Fecha ↓ (recientes)", "Fecha ↑ (antiguas)", "Estado", "Clavero"], index=0)
 
     st.divider()
     st.toggle("Auto-refresh", key="auto_refresh", value=st.session_state["auto_refresh"])
     st.caption("Si está activo, refresca cada ~2 s (pausa si editas)")
 
-    # Exportación (se rellena más abajo)
     st.markdown("### Exportar")
     export_json_ph = st.empty()
     export_csv_ph = st.empty()
 
 def _item_date_ok(it):
-    try:
-        d = datetime.fromisoformat(it.get("created_at","").replace("Z","")).date()
-    except Exception:
-        return False
+    try: d = datetime.fromisoformat(it.get("created_at","").replace("Z","")).date()
+    except Exception: return False
     return (d >= start_d) and (d <= end_d)
 
 def _item_text_ok(it):
@@ -269,8 +228,8 @@ def _item_topk_ok(it):
     k = ((pred.get("topk") or {}).get("claveros") or [])
     return len(k) > 0
 
-# ------------------- KPIs + mini-gráfico -------------------
-preds_all = load_predictions()  # recarga
+# ------------------- KPIs -------------------
+preds_all = load_predictions()
 total = len(preds_all)
 num_ok = sum(1 for it in preds_all if _status_of(it) == "Satisfechas")
 num_rev = sum(1 for it in preds_all if _status_of(it) == "Revisadas")
@@ -282,46 +241,19 @@ c2.metric("Pendientes", num_pending)
 c3.metric("Revisadas", num_rev)
 c4.metric("Satisfechas", num_ok)
 
-# Minigráfico (evolución diaria de incidencias)
-if alt is not None and pd is not None:
-    try:
-        if preds_all:
-            dates = [
-                datetime.fromisoformat(it["created_at"].replace("Z","")).date()
-                for it in preds_all if it.get("created_at")
-            ]
-            df_dates = pd.DataFrame(dates, columns=["date"])
-            df_counts = df_dates.value_counts().rename_axis('date').reset_index(name='count').sort_values("date")
-            chart = alt.Chart(df_counts).mark_area(opacity=0.4).encode(
-                x=alt.X('date:T', title=None),
-                y=alt.Y('count:Q', title='Incidencias/día'),
-                tooltip=['date:T','count:Q']
-            ).properties(height=60)
-            st.altair_chart(chart, use_container_width=True)
-    except Exception:
-        pass
-
 st.divider()
 
-# ------------------- Ordenado y filtrado final -------------------
-filtered = [
-    it for it in preds_all
-    if _item_date_ok(it) and _item_text_ok(it) and _item_clavero_ok(it) and _item_status_ok(it) and _item_topk_ok(it)
-]
+# ------------------- Ordenado + Export -------------------
+filtered = [it for it in preds_all if _item_date_ok(it) and _item_text_ok(it) and _item_clavero_ok(it) and _item_status_ok(it) and _item_topk_ok(it)]
 
 def _sort_key(it):
-    if sort_opt == "Fecha ↑ (antiguas)":
-        return it.get("created_at","")
-    if sort_opt == "Estado":
-        return _status_of(it), it.get("created_at","")
-    if sort_opt == "Clavero":
-        return (it.get("prediction",{}) or {}).get("clavero",""), it.get("created_at","")
-    return it.get("created_at","")  # Fecha ↓ por defecto
-
+    if sort_opt == "Fecha ↑ (antiguas)": return it.get("created_at","")
+    if sort_opt == "Estado": return _status_of(it), it.get("created_at","")
+    if sort_opt == "Clavero": return (it.get("prediction",{}) or {}).get("clavero",""), it.get("created_at","")
+    return it.get("created_at","")
 reverse = (sort_opt in ("Fecha ↓ (recientes)",))
 filtered.sort(key=_sort_key, reverse=reverse)
 
-# ---- Exportar lo filtrado ----
 try:
     export_json_ph.download_button(
         "Descargar JSON (filtro)",
@@ -354,40 +286,11 @@ try:
 except Exception:
     pass
 
-# ------------------- Acciones masivas -------------------
-if filtered:
-    with st.expander("🧰 Utilidades sobre el listado filtrado"):
-        left, right = st.columns([1,3])
-        with left:
-            if st.button("Calcular Top-K en lote (faltantes)", type="primary", help="Genera y guarda 3×3 para incidencias del filtro que aún no tienen Top-K"):
-                updated = 0
-                all_preds = load_predictions()
-                for it in filtered:
-                    pred = it.get("prediction", {}) or {}
-                    topk = ((pred.get("topk") or {}).get("claveros") or [])
-                    if len(topk) == 0:
-                        try:
-                            new_pred = aplicar_modelo_topk(it.get("comment",""), k_clavero=3, k_accion=3)
-                            idx = find_index_by_item(all_preds, it)
-                            if idx is not None:
-                                all_preds[idx]["prediction"] = new_pred
-                                updated += 1
-                        except Exception:
-                            continue
-                if updated:
-                    save_predictions(all_preds)
-                    st.toast(f"Top-K calculado en {updated} incidencia(s) ✅")
-                    st.rerun()
-                else:
-                    st.info("No había incidencias pendientes de Top-K en el filtro.")
-
 # ------------------- Render tarjeta -------------------
 def _badge_html(it):
     s = _status_of(it)
-    if s == "Satisfechas":
-        return "<span class='pill badge-ok'>Satisfecha</span>"
-    if s == "Revisadas":
-        return "<span class='pill badge-rev'>Revisada</span>"
+    if s == "Satisfechas": return "<span class='pill badge-ok'>Satisfecha</span>"
+    if s == "Revisadas":   return "<span class='pill badge-rev'>Revisada</span>"
     return "<span class='pill badge-pend'>Pendiente</span>"
 
 def render_card(it, key_prefix: str):
@@ -398,6 +301,7 @@ def render_card(it, key_prefix: str):
     top1_clav = pred.get("clavero","—")
     top1_acc  = pred.get("accion","—")
     topk = ((pred.get("topk") or {}).get("claveros") or [])
+    status = (it.get("status") or "").lower().strip()
 
     edit_key = f"{key_prefix}_{safe_key}"
 
@@ -418,79 +322,99 @@ def render_card(it, key_prefix: str):
     with col2:
         st.markdown(f"<p class='kv'><b>Acción</b>: {top1_acc}</p>", unsafe_allow_html=True)
 
-    # ------- Panel Top-K -------
-    with st.expander("🔎 Ver Top-K sugerencias (3×3)", expanded=False):
-        if not topk:
-            calc_key = f"{key_prefix}_calc_topk_{safe_key}"
-            if st.button("Calcular Top-K ahora", key=calc_key, help="Genera y guarda 3×3 para esta incidencia", type="primary"):
-                try:
-                    new_pred = aplicar_modelo_topk(comment, k_clavero=3, k_accion=3)
-                    if not isinstance(new_pred, dict) or "topk" not in new_pred:
-                        raise RuntimeError("Wrapper no devolvió estructura Top-K válida.")
-                    all_preds = load_predictions()
-                    idx_match = find_index_by_item(all_preds, it)
-                    if idx_match is not None:
-                        all_preds[idx_match]["prediction"] = new_pred
-                        save_predictions(all_preds)
-                        st.toast("Top-K generado y guardado ✅")
-                        st.rerun()
-                    else:
-                        st.warning("No se pudo localizar la incidencia para actualizar.")
-                except Exception as e:
-                    st.error(f"No se pudo calcular Top-K: {e}")
-            st.caption("No hay Top-K disponible en esta incidencia.")
-        else:
-            # Lista de claveros con scores y sus acciones
-            for ci, cblock in enumerate(topk):
-                c_label = cblock.get("label","—")
-                c_score = fmt_score(cblock.get("score"))
-                st.markdown(f"**{ci+1}. {c_label}**  <span class='topk-small'>(conf: {c_score})</span>", unsafe_allow_html=True)
+    # ------- Panel Top-K / bloque cerrado -------
+    if status == "ok":
+        st.markdown(
+            f"<div class='locked'>Clasificación cerrada. "
+            f"Se fijó <b>{html.escape(top1_clav)}</b> → <b>{html.escape(top1_acc)}</b>.</div>",
+            unsafe_allow_html=True
+        )
+    else:
+        with st.expander("🔎 Ver Top-K sugerencias (3×3)", expanded=False):
+            if not topk:
+                calc_key = f"{key_prefix}_calc_topk_{safe_key}"
+                if st.button("Calcular Top-K ahora", key=calc_key, type="primary"):
+                    try:
+                        new_pred = aplicar_modelo_topk(comment, k_clavero=3, k_accion=3)
+                        if not isinstance(new_pred, dict) or "topk" not in new_pred:
+                            raise RuntimeError("Wrapper no devolvió estructura Top-K válida.")
+                        all_preds = load_predictions()
+                        idx_match = find_index_by_item(all_preds, it)
+                        if idx_match is not None:
+                            all_preds[idx_match]["prediction"] = new_pred
+                            save_predictions(all_preds)
+                            st.toast("Top-K generado y guardado ✅")
+                            st.rerun()
+                        else:
+                            st.warning("No se pudo localizar la incidencia para actualizar.")
+                    except Exception as e:
+                        st.error(f"No se pudo calcular Top-K: {e}")
+                st.caption("No hay Top-K disponible en esta incidencia.")
+            else:
+                # Claveros y acciones
+                for ci, cblock in enumerate(topk):
+                    c_label = cblock.get("label","—")
+                    st.markdown(f"**{ci+1}. {c_label}**", unsafe_allow_html=True)
 
-                acciones = cblock.get("acciones", []) or []
-                if not acciones:
-                    st.caption("• sin acciones sugeridas")
-                    continue
+                    acciones = cblock.get("acciones", []) or []
+                    if not acciones:
+                        st.caption("• sin acciones sugeridas")
+                        continue
 
-                options = [f"{a.get('label','—')}  (conf: {fmt_score(a.get('score'))})" for a in acciones]
-                rad_key = f"{key_prefix}_rad_{safe_key}_{ci}"
-                choice = st.radio("Acciones", options=options, index=0, key=rad_key, horizontal=True, label_visibility="collapsed")
+                    # ❌ sin (conf: …)
+                    options = [a.get('label','—') for a in acciones]
+                    rad_key = f"{key_prefix}_rad_{safe_key}_{ci}"
+                    choice = st.radio("Acciones", options=options, index=0, key=rad_key, horizontal=True, label_visibility="collapsed")
 
-                apply_key = f"{key_prefix}_apply_{safe_key}_{ci}"
-                if st.button("Aplicar esta opción", key=apply_key, help="Sustituir predicción por esta combinación"):
-                    chosen_idx = options.index(choice)
-                    new_clav = c_label
-                    new_acc  = acciones[chosen_idx].get("label","")
-                    all_preds = load_predictions()
-                    idx_match = find_index_by_item(all_preds, it)
-                    if idx_match is not None:
-                        itm = all_preds[idx_match]
-                        old_pred = itm.get("prediction",{}) or {}
-                        old = {"clavero": old_pred.get("clavero","—"), "accion": old_pred.get("accion","—")}
-                        revs = itm.get("revisions",[]) or []
-                        revs.append({
-                            "created_at": datetime.utcnow().isoformat() + "Z",
-                            "old_prediction": old,
-                            "correction_comment": "Selección manual desde Top-K",
-                            "new_prediction": {"clavero": new_clav, "accion": new_acc}
-                        })
-                        itm["revisions"] = revs
-                        itm["prediction"]["clavero"] = new_clav
-                        itm["prediction"]["accion"] = new_acc
-                        itm["status"] = "revised"
-                        save_predictions(all_preds)
-                        st.toast("Predicción actualizada desde Top-K ✅")
-                        st.rerun()
-                    else:
-                        st.warning("No se pudo localizar la incidencia para actualizar.")
+                    apply_key = f"{key_prefix}_apply_{safe_key}_{ci}"
+                    if st.button("Aplicar esta opción", key=apply_key, help="Fijar clavero+acción, vaciar Top-K y marcar como satisfecha"):
+                        chosen_idx = options.index(choice)
+                        new_clav = c_label
+                        new_acc  = acciones[chosen_idx].get("label","")
+                        all_preds = load_predictions()
+                        idx_match = find_index_by_item(all_preds, it)
+                        if idx_match is not None:
+                            itm = all_preds[idx_match]
+                            old_pred = itm.get("prediction",{}) or {}
+                            old = {"clavero": old_pred.get("clavero","—"), "accion": old_pred.get("accion","—")}
+                            revs = itm.get("revisions",[]) or []
+                            revs.append({
+                                "created_at": datetime.utcnow().isoformat() + "Z",
+                                "old_prediction": old,
+                                "correction_comment": "Selección manual desde Top-K",
+                                "new_prediction": {"clavero": new_clav, "accion": new_acc}
+                            })
+                            itm["revisions"] = revs
+                            itm["prediction"]["clavero"] = new_clav
+                            itm["prediction"]["accion"] = new_acc
+                            itm["prediction"]["topk"] = {"claveros": []}  # cierra opciones
+                            itm["status"] = "ok"
+                            save_predictions(all_preds)
+
+                            fb = load_feedback()
+                            fb.append({
+                                "id": itm.get("id"),
+                                "created_at": datetime.utcnow().isoformat() + "Z",
+                                "original_comment": itm.get("comment",""),
+                                "original_prediction": old,
+                                "user_feedback": "ok_from_topk",
+                                "chosen_pair": {"clavero": new_clav, "accion": new_acc}
+                            })
+                            save_feedback(fb)
+
+                            st.toast("Clasificación aplicada y cerrada ✅")
+                            st.rerun()
+                        else:
+                            st.warning("No se pudo localizar la incidencia para actualizar.")
 
     # ------- Botones principales -------
     st.markdown("<div class='btn-row'>", unsafe_allow_html=True)
-    ok_clicked  = st.button("✅ Satisfecho", key=f"{key_prefix}_ok_{safe_key}")
-    ko_clicked  = st.button("✏️ Mejorar",  key=f"{key_prefix}_ko_{safe_key}")
+    ok_clicked  = st.button("✅ Satisfecho", key=f"{key_prefix}_ok_{safe_key}", disabled=(status=="ok"))
+    ko_clicked  = st.button("✏️ Mejorar",  key=f"{key_prefix}_ko_{safe_key}", disabled=(status=="ok"))
     del_clicked = st.button("🗑️ Borrar pred.", key=f"{key_prefix}_del_{safe_key}")
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # OK → marcar estado y feedback simple
+    # OK → cerrar y limpiar Top-K
     if ok_clicked:
         fb = load_feedback()
         fb.append({
@@ -506,13 +430,15 @@ def render_card(it, key_prefix: str):
         idx_match = find_index_by_item(all_preds, it)
         if idx_match is not None:
             all_preds[idx_match]["status"] = "ok"
+            all_preds[idx_match].setdefault("prediction", {}).setdefault("topk", {"claveros": []})
+            all_preds[idx_match]["prediction"]["topk"] = {"claveros": []}
             save_predictions(all_preds)
             st.toast("Marcada como satisfecha ✅")
         else:
             st.warning("No se pudo localizar la incidencia para actualizar.")
         st.rerun()
 
-    # Borrado
+    # Borrar
     if del_clicked:
         all_preds = load_predictions()
         remaining = [x for x in all_preds if not same_item(x, it)]
@@ -523,9 +449,9 @@ def render_card(it, key_prefix: str):
     if ko_clicked:
         st.session_state.setdefault("edit", {})[edit_key] = True
 
-    # ------- Expander de corrección (recalcular SOLO actuaciones con feedback) -------
+    # ------- Expander de corrección (Modelo 2) -------
     if st.session_state.get("edit", {}).get(edit_key, False):
-        with st.expander("✍️ Proponer corrección y recalcular actuaciones (Modelo 2)", expanded=True):
+        with st.expander("✍️ Proponer corrección y recalcular (Modelo 2)", expanded=True):
             draft_key = f"{key_prefix}_corr_{safe_key}"
             new_txt = st.text_area(
                 "Describe la corrección o el contexto adicional",
@@ -533,17 +459,19 @@ def render_card(it, key_prefix: str):
                 placeholder="Ej: No es timonería; el problema real es el cableado del sensor XYZ…",
                 height=120
             )
-            c1, c2 = st.columns([1,1])
+            c1, c2, c3 = st.columns([1,1,1])
             with c1:
-                recalc_clicked = st.button("🚀 Recalcular actuaciones (Top-K)", key=f"{key_prefix}_recalc_{safe_key}")
+                recalc_act = st.button("🔁 Recalcular ACTUACIONES", key=f"{key_prefix}_recalc_act_{safe_key}")
             with c2:
+                recalc_all = st.button("🧠 Recalcular CLAVEROS+ACTUACIONES", key=f"{key_prefix}_recalc_all_{safe_key}")
+            with c3:
                 cancel_clicked = st.button("Cancelar", key=f"{key_prefix}_cancel_{safe_key}")
 
             if cancel_clicked:
                 st.session_state.setdefault("edit", {})[edit_key] = False
                 st.stop()
 
-            if recalc_clicked:
+            if recalc_act or recalc_all:
                 correction = (new_txt or "").strip()
                 if not correction:
                     st.warning("Escribe una corrección para recalcular.")
@@ -557,18 +485,25 @@ def render_card(it, key_prefix: str):
                         "correction_comment": correction
                     }
                     try:
-                        # Lista de claveros actual (mantener orden). Si no hay, usa el top-1.
-                        claveros_exist = [c.get("label","") for c in topk] if topk else ([top1_clav] if top1_clav else [])
+                        if recalc_act:
+                            claveros_exist = [c.get("label","") for c in topk] if topk else ([top1_clav] if top1_clav else [])
+                            new_pred = aplicar_modelo_recalc_acciones(
+                                descripcion_ot=comment,
+                                comentario_feedback=correction,
+                                claveros_existentes=claveros_exist,
+                                top1_clavero=top1_clav,
+                                k_accion=3
+                            )
+                        else:
+                            new_pred = aplicar_modelo_recalc_todo(
+                                descripcion_ot=comment,
+                                comentario_feedback=correction,
+                                k_clavero=3,
+                                k_accion=3
+                            )
 
-                        new_pred = aplicar_modelo_recalc_acciones(
-                            descripcion_ot=comment,
-                            comentario_feedback=correction,
-                            claveros_existentes=claveros_exist,
-                            top1_clavero=top1_clav,
-                            k_accion=3
-                        )
                         if not isinstance(new_pred, dict) or "clavero" not in new_pred:
-                            raise RuntimeError("El wrapper no devolvió un diccionario válido en recalc_acciones.")
+                            raise RuntimeError("El wrapper no devolvió una estructura válida.")
 
                         fb_entry["recalc"] = {"clavero": new_pred.get("clavero",""), "accion": new_pred.get("accion","")}
 
@@ -584,10 +519,10 @@ def render_card(it, key_prefix: str):
                                 "new_prediction": {"clavero": new_pred.get("clavero",""), "accion": new_pred.get("accion","")}
                             })
                             itm["revisions"] = revs
-                            itm["prediction"] = new_pred  # mismo conjunto de claveros, nuevas actuaciones
+                            itm["prediction"] = new_pred  # claveros y/o actuaciones actualizadas
                             itm["status"] = "revised"
                             save_predictions(all_preds)
-                            st.toast("Actuaciones recalculadas con feedback ✅")
+                            st.toast("Recalc completado ✅")
                         else:
                             st.warning("No se pudo localizar la incidencia para revisar.")
                     except Exception as e:
@@ -608,7 +543,6 @@ def render_card(it, key_prefix: str):
                 oldp   = r.get("old_prediction", {}) or {}
                 newp   = r.get("new_prediction", {}) or {}
                 reason = r.get("correction_comment", "—")
-
                 st.markdown(f"**{stamp}**", unsafe_allow_html=True)
                 st.markdown(f"- Antes → Clavero: `{oldp.get('clavero','—')}`, Acción: `{oldp.get('accion','—')}`")
                 st.markdown(f"- Después → Clavero: `{newp.get('clavero','—')}`, Acción: `{newp.get('accion','—')}`")
