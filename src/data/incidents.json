@@ -524,5 +524,29 @@
       "q4": false,
       "q5": false
     }
+  },
+  {
+    "id": "874d4391-b0dd-4d6b-9593-3996a0ae9b6f",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-26T10:12:22.619934Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
+  },
+  {
+    "id": "ba5a3d01-8b74-4846-bbef-84c42adfb5e1",
+    "comment": "Fallo en válvula antibloqueo",
+    "created_at": "2025-10-26T10:12:30.929392Z",
+    "yes_no": {
+      "q1": false,
+      "q2": false,
+      "q3": false,
+      "q4": true,
+      "q5": false
+    }
   }
 ]
