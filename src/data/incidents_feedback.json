@@ -592,5 +592,19 @@
       "clavero": "FRE0101",
       "accion": "T70"
     }
+  },
+  {
+    "id": "e3fc3cb2-6715-4eea-809a-dbd7b021b8fb",
+    "created_at": "2025-10-26T09:49:27.389454Z",
+    "original_comment": "Fuga/Fallo en el antirretorno",
+    "original_prediction": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    },
+    "user_feedback": "ok_from_topk",
+    "chosen_pair": {
+      "clavero": "FRE0101",
+      "accion": "T79"
+    }
   }
 ]

@@ -524,5 +524,17 @@
       "q4": false,
       "q5": false
     }
+  },
+  {
+    "id": "e3fc3cb2-6715-4eea-809a-dbd7b021b8fb",
+    "comment": "Fuga/Fallo en el antirretorno",
+    "created_at": "2025-10-26T09:49:05.712421Z",
+    "yes_no": {
+      "q1": true,
+      "q2": false,
+      "q3": false,
+      "q4": false,
+      "q5": false
+    }
   }
 ]
